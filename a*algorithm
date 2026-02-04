@@ -1,0 +1,54 @@
+# Input grid size
+n = int(input("Enter grid size: "))
+
+# Input grid
+grid = []
+print("Enter grid values (0 = free, 1 = block):")
+for i in range(n):
+    row = list(map(int, input().split()))
+    grid.append(row)
+
+# Input start and goal
+sx, sy = map(int, input("Enter start position (row col): ").split())
+gx, gy = map(int, input("Enter goal position (row col): ").split())
+
+start = (sx, sy)
+goal = (gx, gy)
+
+# Heuristic function (Manhattan distance)
+def heuristic(x, y):
+    return abs(x - goal[0]) + abs(y - goal[1])
+
+open_list = [start]
+path = {}
+
+while open_list:
+    current = open_list[0]
+    open_list.remove(current)
+
+    if current == goal:
+        break
+
+    x, y = current
+
+    # Only down and right moves
+    for dx, dy in [(1, 0), (0, 1)]:
+        nx, ny = x + dx, y + dy
+
+        if 0 <= nx < n and 0 <= ny < n and grid[nx][ny] == 0:
+            if (nx, ny) not in path:
+                path[(nx, ny)] = current
+                open_list.append((nx, ny))
+
+# Construct path
+node = goal
+final_path = []
+
+while node != start:
+    final_path.append(node)
+    node = path[node]
+
+final_path.append(start)
+final_path.reverse()
+
+print("Path:", final_path)
